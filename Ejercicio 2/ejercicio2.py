@@ -7,11 +7,13 @@ with open('users.json') as file:
     # Transform json input to python objects
     data = json.load(file)
 
+
 def sql_create_table(con):
     cursorObj = con.cursor()
 
     # TABLA PARA USUARIOS
-    cursorObj.execute("CREATE TABLE IF NOT EXISTS usuariosTable (nombre, telefono, contrasena, provincia, permisos, emailTotal, emailPhishing, emailCliclados)")
+    cursorObj.execute(
+        "CREATE TABLE IF NOT EXISTS usuariosTable (nombre, telefono, contrasena, provincia, permisos, emailTotal, emailPhishing, emailCliclados)")
     for usuarios in range(len(data['usuarios'])):
         for name in data['usuarios'][usuarios].keys():
             telefono = str(data['usuarios'][usuarios][name]['telefono'])
@@ -22,28 +24,27 @@ def sql_create_table(con):
             emailPhishing = str(data['usuarios'][usuarios][name]['emails']['phishing'])
             emailCliclados = str(data['usuarios'][usuarios][name]['emails']['cliclados'])
 
-            cursorObj.execute('INSERT INTO usuariosTable (nombre, telefono, contrasena, provincia, permisos, emailTotal, emailPhishing, emailCliclados) VALUES (?,?,?,?,?,?,?,?)',(name,telefono, contra, provincia, permisos, emailTotal, emailPhishing, emailCliclados))
+            cursorObj.execute(
+                'INSERT INTO usuariosTable (nombre, telefono, contrasena, provincia, permisos, emailTotal, emailPhishing, emailCliclados) VALUES (?,?,?,?,?,?,?,?)',
+                (name, telefono, contra, provincia, permisos, emailTotal, emailPhishing, emailCliclados))
             con.commit()
 
     # TABLA PARA FECHAS
     cursorObj.execute("CREATE TABLE IF NOT EXISTS fechasTable (nombre, fechas)")
     for usuarios in range(len(data['usuarios'])):
         for name in data['usuarios'][usuarios].keys():
-            fechas = []
             for fecha in data['usuarios'][usuarios][name]['fechas']:
-                fechas.append(fecha)
-            cursorObj.execute('''INSERT INTO fechasTable (nombre, fechas) VALUES (?,?)''', (name, str(fechas), ))
-            con.commit()
+                cursorObj.execute('''INSERT INTO fechasTable (nombre, fechas) VALUES (?,?)''', (name, str(fecha),))
+                con.commit()
 
     # TABLA PARA IPS
     cursorObj.execute("CREATE TABLE IF NOT EXISTS ipsTable (nombre, ips)")
     for usuarios in range(len(data['usuarios'])):
         for name in data['usuarios'][usuarios].keys():
-            ips = []
             for ip in data['usuarios'][usuarios][name]['ips']:
-                ips.append(ip)
-            cursorObj.execute('''INSERT INTO ipsTable (nombre, ips) VALUES (?,?)''', (name, str(ips), ))
-            con.commit()
+                cursorObj.execute('''INSERT INTO ipsTable (nombre, ips) VALUES (?,?)''', (name, str(ip),))
+                con.commit()
+
 
 def sql_print(con):
     cursorObj = con.cursor()
@@ -62,6 +63,7 @@ def sql_print(con):
     for rowIp in rowsIp:
         print(rowIp)
 
+
 def sql_delete_table(con):
     cursorObj = con.cursor()
     cursorObj.execute('DROP TABLE IF EXISTS usuariosTable')
@@ -71,9 +73,19 @@ def sql_delete_table(con):
     cursorObj.execute('DROP TABLE IF EXISTS ipsTable')
     con.commit()
 
-con = sqlite3.connect('bbdd.db')
+
+def dataframe():
+    df = pd.read_sql_query("SELECT * FROM usuariosTable GROUP BY nombre", con)
+    df["fechas"] = pd.read_sql_query("SELECT COUNT(fechas) FROM fechasTable GROUP BY nombre", con)
+    df["ips"] = pd.read_sql_query("SELECT COUNT(ips) FROM ipsTable GROUP BY nombre", con)
+    return df
+
+
+con = sqlite3.connect('ejercicio2.db')
 sql_create_table(con)
-sql_print(con)
-#sql_delete_table(con)
+# sql_print(con)
+df = dataframe()
+print(df)
+# sql_delete_table(con)
 con.close()
-#eval()
+# eval()
