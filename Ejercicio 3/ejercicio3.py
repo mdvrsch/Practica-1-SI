@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 
 with open('../users.json') as file:
-    # Transform json input to python objects
     data = json.load(file)
 
 
@@ -81,50 +80,59 @@ def dataframe():
     return df
 
 
-con = sqlite3.connect('ejercicio2.db')
+con = sqlite3.connect('ejercicio3.db')
 sql_create_table(con)
-# sql_print(con)
+#sql_print(con)
 df = dataframe()
-print(df)
-
-# Número de muestras (valores distintos de missing)
-
-# Media y desviación estándar del total de fechas que se ha iniciado sesión
-    # Todos los usuarios tienen al menos una fecha
-mediaFechas = df["fechas"].mean()
-print("La media del total de fechas que han iniciado sesion: ",mediaFechas)
-desviacionFechas = df["fechas"].std()
-print("La desviación estandar del total de fechas que han iniciado sesion: ",desviacionFechas)
-
-    # Media y desviación estándar del total de IPs que se han detectado
-        # Hay un usuario que no tiene niguna dirección Ip - restar este usuario
-            # df["ips"] = df["ips"].fillna(0)
-            # mediaIPs = df["ips"].mean()
-            # print("La media del total de IPs: ", mediaIPs)
-            #desviacionIPs = df["ips"].std()
-            # print("La desviacion estandar del total de IPs: ", desviacionIPs)
-
-# Media y desviación estándar del número de emails recibidos : columna emailsTotal
-    # Entendemos que los emails de Phishing y los emails Cliclados se encunetra contenidos en el emails totales.
-df["emailTotal"] = df["emailTotal"].astype(int)
-mediaEmail = df["emailTotal"].mean()
-print("La media del numero de email recibidos: ", mediaEmail)
-desviacionEmail = df["emailTotal"].std()
-print("La desviacion estandar del numero de email recibidos: ", desviacionEmail)
-
-# Valor mínimo y máximo del total de fechas que se ha iniciado sesión
-minFechas = df["fechas"].min()
-print("El valor minimo de fechas que se ha iniciado sesion: ", minFechas)
-maxFechas = df["fechas"].max()
-print("El valor maximo de fechas que se ha iniciado sesion: ", maxFechas)
-
-# Valor mínimo y máximo del número de emails recibidos
-minEmails = df["emailTotal"].min()
-print("El valor minimo de emails recibidos: ", minEmails)
-maxEmails = df["emailTotal"].max()
-print("El valor maximo de emails recibidos: ", maxEmails)
-
 #print(df)
+
+# 1º agrupación: < 200 correos || >= 200 correos
+df["emailTotal"] = df["emailTotal"].astype(int)
+small = df[df["emailTotal"]<200]
+big = df[df["emailTotal"]>=200]
+
+# 2º agrupación : permisos = 0 (usuarios) || permisos = 1 (administradores)
+small = small.groupby(df.permisos)
+userSmall = small.get_group("0")
+adminSmall = small.get_group("1")
+
+big = big.groupby(df.permisos)
+userBig = big.get_group("0")
+adminBig = big.get_group("1")
+
+print("Permisos = 0 && email < 200\n")
+print(userSmall)
+
+print("Permisos = 0 && email >= 200\n")
+print(userBig)
+
+print("Permisos = 1 && email < 200\n")
+print(adminSmall)
+
+print("Permisos = 1 && email >= 200\n")
+print(adminBig)
+
+# EMAIL PHISHING
+# Número de observaciones
+
+
+# Número de valores ausentes
+
+
+# Mediana
+
+
+# Media
+
+
+# Varianza
+
+
+# Valores máximo y mínimo
+
+
+
+
 sql_delete_table(con)
 con.close()
 
