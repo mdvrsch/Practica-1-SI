@@ -1,5 +1,7 @@
 import sqlite3
 import json
+import pandas as pd
+import numpy as np
 
 with open('users.json') as file:
     # Transform json input to python objects
@@ -24,23 +26,23 @@ def sql_create_table(con):
             con.commit()
 
     # TABLA PARA FECHAS
-    cursorObj.execute("CREATE TABLE IF NOT EXISTS fechasTable (fechas)")
+    cursorObj.execute("CREATE TABLE IF NOT EXISTS fechasTable (nombre, fechas)")
     for usuarios in range(len(data['usuarios'])):
         for name in data['usuarios'][usuarios].keys():
             fechas = []
             for fecha in data['usuarios'][usuarios][name]['fechas']:
                 fechas.append(fecha)
-            cursorObj.execute('''INSERT INTO fechasTable (fechas) VALUES (?)''', (str(fechas), ))
+            cursorObj.execute('''INSERT INTO fechasTable (nombre, fechas) VALUES (?,?)''', (name, str(fechas), ))
             con.commit()
 
     # TABLA PARA IPS
-    cursorObj.execute("CREATE TABLE IF NOT EXISTS ipsTable (ips)")
+    cursorObj.execute("CREATE TABLE IF NOT EXISTS ipsTable (nombre, ips)")
     for usuarios in range(len(data['usuarios'])):
         for name in data['usuarios'][usuarios].keys():
             ips = []
             for ip in data['usuarios'][usuarios][name]['ips']:
                 ips.append(ip)
-            cursorObj.execute('''INSERT INTO ipsTable (ips) VALUES (?)''', (str(ips), ))
+            cursorObj.execute('''INSERT INTO ipsTable (nombre, ips) VALUES (?,?)''', (name, str(ips), ))
             con.commit()
 
 def sql_print(con):
@@ -69,7 +71,7 @@ def sql_delete_table(con):
     cursorObj.execute('DROP TABLE IF EXISTS ipsTable')
     con.commit()
 
-con = sqlite3.connect('BBDDprueba.db')
+con = sqlite3.connect('bbdd.db')
 sql_create_table(con)
 sql_print(con)
 #sql_delete_table(con)
