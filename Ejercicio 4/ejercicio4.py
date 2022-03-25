@@ -1,9 +1,9 @@
 import sqlite3
 import json
 import pandas as pd
+import matplotlib.pyplot as plt
 
-with open('./users.json') as file:
-    # Transform json input to python objects
+with open('../users.json') as file:
     data = json.load(file)
 
 
@@ -80,65 +80,22 @@ def dataframe():
     return df
 
 
-con = sqlite3.connect('ejercicio2.db')
+con = sqlite3.connect('ejercicio4.db')
 sql_create_table(con)
 # sql_print(con)
-
 df = dataframe()
-
 # print(df)
 
-# EJERCICIO 2
+# EJERCICIO 4
 
-# Número de muestras (valores distintos de missing)
-missing = 0
-for index, row in df.iterrows():
-    if row["telefono"] == "None":
-        missing += 1
-    if row["provincia"] == "None":
-        missing += 1
-    if row["ips"] == "None":
-        missing += 1
+# Mostrar los 10 usuarios más críticos representadas en un gráfico de barras
+df_mayor = df.sort_values(['contrasena', 'emailCliclados'], ascending=False)
+df_mayor = df_mayor.head(n=10)
 
-missing += 1
-not_missing = (len(df) * len(df.columns)) - missing
-print("Número de muestras: ", not_missing)
+df = pd.DataFrame(df_mayor)
 
-# Media y desviación estándar del total de fechas que se ha iniciado sesión
-# Todos los usuarios tienen al menos una fecha
-mediaFechas = df["fechas"].mean()
-print("La media del total de fechas que han iniciado sesion: ", mediaFechas)
-desviacionFechas = df["fechas"].std()
-print("La desviación estandar del total de fechas que han iniciado sesion: ", desviacionFechas)
+df.plot(kind="bar", stacked=True, figsize=(10, 8))
+plt.show()
 
-# Media y desviación estándar del total de IPs que se han detectado
-# Hay un usuario que no tiene niguna dirección Ip - restar este usuario
-df["ips"] = df["ips"].fillna(0)
-mediaIPs = df["ips"].mean()
-print("La media del total de IPs: ", mediaIPs)
-desviacionIPs = df["ips"].std()
-print("La desviacion estandar del total de IPs: ", desviacionIPs)
-
-# Media y desviación estándar del número de emails recibidos : columna emailsTotal
-# Entendemos que los emails de Phishing y los emails Cliclados se encuentran contenidos en los emails totales
-df["emailTotal"] = df["emailTotal"].astype(int)
-mediaEmail = df["emailTotal"].mean()
-print("La media del numero de email recibidos: ", mediaEmail)
-desviacionEmail = df["emailTotal"].std()
-print("La desviacion estandar del numero de email recibidos: ", desviacionEmail)
-
-# Valor mínimo y máximo del total de fechas que se ha iniciado sesión
-minFechas = df["fechas"].min()
-print("El valor minimo de fechas que se ha iniciado sesion: ", minFechas)
-maxFechas = df["fechas"].max()
-print("El valor maximo de fechas que se ha iniciado sesion: ", maxFechas)
-
-# Valor mínimo y máximo del número de emails recibidos
-minEmails = df["emailTotal"].min()
-print("El valor minimo de emails recibidos: ", minEmails)
-maxEmails = df["emailTotal"].max()
-print("El valor maximo de emails recibidos: ", maxEmails)
-
-# print(df)
 sql_delete_table(con)
 con.close()

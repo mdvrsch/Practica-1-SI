@@ -1,7 +1,6 @@
 import sqlite3
 import json
 import pandas as pd
-import numpy as np
 
 with open('../users.json') as file:
     data = json.load(file)
@@ -82,14 +81,16 @@ def dataframe():
 
 con = sqlite3.connect('ejercicio3.db')
 sql_create_table(con)
-#sql_print(con)
+# sql_print(con)
 df = dataframe()
-#print(df)
+# print(df)
+
+# EJERCICIO 3
 
 # 1º agrupación: < 200 correos || >= 200 correos
 df["emailTotal"] = df["emailTotal"].astype(int)
-small = df[df["emailTotal"]<200]
-big = df[df["emailTotal"]>=200]
+small = df[df["emailTotal"] < 200]
+big = df[df["emailTotal"] >= 200]
 
 # 2º agrupación : permisos = 0 (usuarios) || permisos = 1 (administradores)
 small = small.groupby(df.permisos)
@@ -117,22 +118,31 @@ print(adminBig)
 
 
 # Número de valores ausentes
+missing = 0
+for index, row in df.iterrows():
+    if row["emailPhishing"] == 0:
+        missing += 1
 
+print("Número de valores ausentes: ", missing)
 
 # Mediana
-
+mediana = df["emailPhishing"].median()
+print("La mediana de emails de phishing es: ", mediana)
 
 # Media
-
+media = df["emailPhishing"].mean()
+print("La media de emails de phishing es: ", media)
 
 # Varianza
-
+df["emailPhishing"] = df["emailPhishing"].astype(int)
+varianza = df["emailPhishing"].var()
+print("La varianza de emails de phishing es: ", varianza)
 
 # Valores máximo y mínimo
+minPhishing = df["emailPhishing"].min()
+print("El valor minimo de emails de phishing es: ", minPhishing)
+maxPhishing = df["emailPhishing"].max()
+print("El valor maximo de emails de phshing es: ", maxPhishing)
 
-
-
-
-sql_delete_table(con)
+# sql_delete_table(con)
 con.close()
-
