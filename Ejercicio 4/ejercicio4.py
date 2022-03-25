@@ -9,7 +9,6 @@ def dataframe_users():
     df_users["ips"] = pd.read_sql_query("SELECT COUNT(ips) FROM ipsTable GROUP BY nombre", con)
     return df_users
 
-
 def dataframe_legal():
     df_legal = pd.read_sql_query("SELECT * FROM legalTable GROUP BY nombre", con)
     return df_legal

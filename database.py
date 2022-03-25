@@ -98,5 +98,5 @@ def sql_delete_table(con):
 con = sqlite3.connect('database.db')
 sql_create_table(con)
 # sql_print(con)
-sql_delete_table(con)
+# sql_delete_table(con)
 con.close()

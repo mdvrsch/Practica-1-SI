@@ -43,15 +43,18 @@ print("Permisos = 1 && email >= 200\n")
 print(adminBig)
 
 # EMAIL PHISHING
-# Número de observaciones
+df["email_phishing"] = df["email_phishing"].astype(int)
 
+# Número de observaciones
+# Número de emails totales de phishing que hemos recibido
+observaciones = df["email_phishing"].sum()
+print("El número total de observaciones de emails de phishing: ", observaciones)
 
 # Número de valores ausentes
 missing = 0
 for index, row in df.iterrows():
     if row["email_phishing"] == 0:
         missing += 1
-
 print("Número de valores ausentes: ", missing)
 
 # Mediana
@@ -63,7 +66,6 @@ media = df["email_phishing"].mean()
 print("La media de emails de phishing es: ", media)
 
 # Varianza
-df["email_phishing"] = df["email_phishing"].astype(int)
 varianza = df["email_phishing"].var()
 print("La varianza de emails de phishing es: ", varianza)
 
