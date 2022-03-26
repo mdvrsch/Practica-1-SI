@@ -8,24 +8,19 @@ def dataframe():
     df["ips"] = pd.read_sql_query("SELECT COUNT(ips) FROM ipsTable GROUP BY nombre", con)
     return df
 
-
 def dataframeIps():
     dfIp = pd.read_sql_query("SELECT (ips) FROM ipsTable GROUP BY nombre", con)
     return dfIp
 
 
-con = sqlite3.connect('./database.db')
-
+con = sqlite3.connect('../database.db')
 df = dataframe()
-# print(df)
-
 dfIp = dataframeIps()
-print(dfIp)
+
 
 # EJERCICIO 2
 
 # Número de muestras (valores distintos de missing)
-
 missing = 0
 for index, row in df.iterrows():
     if row["telefono"] == "None":
@@ -42,7 +37,6 @@ print("Número de muestras: ", not_missing)
 
 # Media y desviación estándar del total de fechas que se ha iniciado sesión
 # Todos los usuarios tienen al menos una fecha
-
 mediaFechas = df["fechas"].mean()
 print("La media del total de fechas que han iniciado sesion: ", mediaFechas)
 desviacionFechas = df["fechas"].std()

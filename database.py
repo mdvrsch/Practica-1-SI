@@ -10,7 +10,6 @@ with open('legal.json') as file:
 with open('contrasenas.json') as file:
     data_contrasenas = json.load(file)
 
-
 def sql_create_table(con):
     cursos_obj = con.cursor()
 
@@ -26,7 +25,6 @@ def sql_create_table(con):
             email_total = str(data_users['usuarios'][usuarios][name]['emails']['total'])
             email_phishing = str(data_users['usuarios'][usuarios][name]['emails']['phishing'])
             email_cliclados = str(data_users['usuarios'][usuarios][name]['emails']['cliclados'])
-
             cursos_obj.execute(
                 "INSERT INTO usuariosTable (nombre, telefono, contrasena, provincia, permisos, email_total, email_phishing, email_cliclados) VALUES (?,?,?,?,?,?,?,?)",
                 (name, telefono, contrasena, provincia, permisos, email_total, email_phishing, email_cliclados))
@@ -56,19 +54,17 @@ def sql_create_table(con):
             aviso = str(data_legal['legal'][webs][name]['aviso'])
             proteccion = str(data_legal['legal'][webs][name]['proteccion_de_datos'])
             creacion = str(data_legal['legal'][webs][name]['creacion'])
-
             cursos_obj.execute(
                 "INSERT INTO legalTable (nombre, cookies, aviso, proteccion, creacion) VALUES (?,?,?,?,?)",
                 (name, cookies, aviso, proteccion, creacion))
             con.commit()
 
-    # TABLA CONTRASEÑAS
+    # TABLA PARA CONTRASEÑAS
     cursos_obj.execute("CREATE TABLE IF NOT EXISTS contrasenaTable (nombre, contrasena, vulnerable)")
     for contra in range(len(data_contrasenas['contrasenas'])):
         for name in data_contrasenas['contrasenas'][contra].keys():
             contrasena = str(data_contrasenas['contrasenas'][contra][name]['contrasena'])
             vulnerable = str(data_contrasenas['contrasenas'][contra][name]['vulnerable'])
-
             cursos_obj.execute("INSERT INTO contrasenaTable (nombre, contrasena, vulnerable) VALUES (?,?,?)",
                                (name, contrasena, vulnerable))
             con.commit()
@@ -96,6 +92,11 @@ def sql_print(con):
     for rowLegal in rows_legal:
         print(rowLegal)
 
+    cursor_obj.execute('SELECT * FROM contrasenaTable')
+    rows_contra = cursor_obj.fetchall()
+    for rowContra in rows_contra:
+        print(rowContra)
+
 
 def sql_delete_table(con):
     cursorObj = con.cursor()
@@ -106,6 +107,8 @@ def sql_delete_table(con):
     cursorObj.execute("DROP TABLE IF EXISTS ipsTable")
     con.commit()
     cursorObj.execute("DROP TABLE IF EXISTS legalTable")
+    con.commit()
+    cursorObj.execute("DROP TABLE IF EXISTS contrasenaTable")
     con.commit()
 
 

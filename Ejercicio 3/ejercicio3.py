@@ -10,10 +10,8 @@ def dataframe_users():
 
 
 con = sqlite3.connect('../database.db')
-
 df = dataframe_users()
 
-# print(df)
 
 # EJERCICIO 3
 
@@ -27,20 +25,19 @@ df_emails_menos = df_emails_menos.groupby("permisos")
 df_emails_mas = df_emails_mas.groupby("permisos")
 
 print("Emails < 200:\n", df_emails_menos.sum())
-
 print("Emails >= 200:\n", df_emails_mas.sum())
+
 
 # EMAIL PHISHING
 df["email_phishing"] = df["email_phishing"].astype(int)
 
-# Número de observaciones
-# Número de emails totales de phishing que hemos recibido
+# Número de observaciones = Número de emails totales de phishing que hemos recibido
 observaciones_totales = df["email_phishing"].sum()
 observaciones_menos = df_emails_menos.sum()
 observaciones_mas = df_emails_mas.sum()
 print("El número total de observaciones de emails de phishing: ", observaciones_totales)
-print("El número total de observaciones de emails < 200 de phishing: ", observaciones_menos)
-print("El número total de observaciones de emails >= 200 de phishing: ", observaciones_mas)
+print("El número total de observaciones de emails < 200 de phishing:\n", observaciones_menos)
+print("El número total de observaciones de emails >= 200 de phishing:\n", observaciones_mas)
 
 # Número de valores ausentes
 missing = 0
