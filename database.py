@@ -7,6 +7,9 @@ with open('users.json') as file:
 with open('legal.json') as file:
     data_legal = json.load(file)
 
+with open('contrasenas.json') as file:
+    data_contrasenas = json.load(file)
+
 
 def sql_create_table(con):
     cursos_obj = con.cursor()
@@ -57,6 +60,17 @@ def sql_create_table(con):
             cursos_obj.execute(
                 "INSERT INTO legalTable (nombre, cookies, aviso, proteccion, creacion) VALUES (?,?,?,?,?)",
                 (name, cookies, aviso, proteccion, creacion))
+            con.commit()
+
+    # TABLA CONTRASEÑAS
+    cursos_obj.execute("CREATE TABLE IF NOT EXISTS contrasenaTable (nombre, contrasena, vulnerable)")
+    for contra in range(len(data_contrasenas['contrasenas'])):
+        for name in data_contrasenas['contrasenas'][contra].keys():
+            contrasena = str(data_contrasenas['contrasenas'][contra][name]['contrasena'])
+            vulnerable = str(data_contrasenas['contrasenas'][contra][name]['vulnerable'])
+
+            cursos_obj.execute("INSERT INTO contrasenaTable (nombre, contrasena, vulnerable) VALUES (?,?,?)",
+                               (name, contrasena, vulnerable))
             con.commit()
 
 
