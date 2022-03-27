@@ -4,12 +4,15 @@ import matplotlib.pyplot as plt
 
 
 def dataframe_users():
-    df_users = pd.read_sql_query("SELECT nombre, email_phishing, email_cliclados FROM usuariosTable GROUP BY nombre",con)
+    df_users = pd.read_sql_query("SELECT nombre, email_phishing, email_cliclados FROM usuariosTable GROUP BY nombre",
+                                 con)
     return df_users
+
 
 def dataframe_legal():
     df_legal = pd.read_sql_query("SELECT * FROM legalTable GROUP BY nombre", con)
     return df_legal
+
 
 def dataframe_contra():
     df_contra = pd.read_sql_query("SELECT * FROM contrasenaTable GROUP BY nombre", con)
@@ -31,11 +34,12 @@ df_desactualizadas = dataframe_desactualizadas()
 
 # Mostrar los 10 usuarios más críticos representadas en un gráfico de barras
 # Usuario crítico -> contraseña débil + mayor probabilidad de pulsar un correo de spam
-    # 1º unimos por nombre df_user + df_contra
+# 1º unimos por nombre df_user + df_contra
 df_contra["vulnerable"] = df_contra["vulnerable"].astype(int)
 df_critico = df_contra.merge(df_users, on="nombre")
-    # 2º seleccionamos solo los que tienen la contraseña vulnerable
+# 2º seleccionamos solo los que tienen la contraseña vulnerable
 df_contra_debil = df_critico[df_critico["vulnerable"] == 1]
+<<<<<<< HEAD
     # 3º calculamos la probabilidad de entre los que son vulnerables
 df_contra_debil["probabilidad"] = (df_contra_debil["email_cliclados"].astype(float) / df_contra_debil["email_phishing"].astype(float)) * 100
     # 4º ordenamos los valores de mayor a menor
@@ -43,6 +47,15 @@ df_contra_debil= df_contra_debil.sort_values("probabilidad", ascending=False)
     # 5º seleccionamos los 10 mayores
 df_contra_debil= df_contra_debil.head(n=10)
 df_contra_debil = df_contra_debil.drop(["vulnerable"], axis=1)
+=======
+# 3º calculamos la probabilidad de entre los que son vulnerables
+df_probabilidad = (df_contra_debil["email_cliclados"].astype(float) / df_contra_debil["email_phishing"].astype(
+    float)) * 100
+# 4º ordenamos los valores de mayor a menor
+df_probabilidad = df_probabilidad.sort_values(ascending=False)
+# 5º seleccionamos los 10 mayores
+df_probabilidad = df_probabilidad.head(n=10)
+>>>>>>> 6476d79312cbd10db9fac827e22d366f81d4e5c0
 
 df_contra_debil.plot(x="nombre", kind="bar", stacked=False, figsize=(10, 8))
 plt.show()
@@ -60,13 +73,13 @@ df_desactualizadas = df_desactualizadas.drop(["desactualizadas"], axis=1)
 df_desactualizadas.plot(x="nombre", kind="bar", stacked=False, figsize=(10, 8))
 plt.show()
 
-
 # Mostrar las media de conexiones de usuario con contraseña vulnerable, frente a los que no son vulnerables
 df_vulnerable = (df_contra["vulnerable"][df_contra["vulnerable"] == 1]).count()
 media_vulnerable = (df_vulnerable / (df_contra["vulnerable"].count())) * 100
 df_no_vulnerable = (df_contra["vulnerable"][df_contra["vulnerable"] == 0]).count()
 media_no_vulnerable = (df_no_vulnerable / (df_contra["vulnerable"].count())) * 100
 
+<<<<<<< HEAD
 leyenda = ["Conexiones vulnerables", "Conexiones no vulnerables"]
 valores = [media_vulnerable, media_no_vulnerable]
 plt.pie(valores, labels=leyenda, autopct="%0.1f %%")
@@ -87,6 +100,26 @@ plt.show()
 # df_politicas_no_cumplen = len(df_legal)
 
 
+=======
+plt.bar(["Conexiones vulnerables", "Conexiones no vulnerables"], [media_vulnerable, media_no_vulnerable])
+plt.show()
+
+# Mostrar según el año de creacción las webs que cumplen todas las políticas de privacidad, frente a las que no cumplen la política de privacidad
+df_legal["cookies"] = df_legal["cookies"].astype(int)
+df_legal["aviso"] = df_legal["aviso"].astype(int)
+df_legal["proteccion"] = df_legal["proteccion"].astype(int)
+
+df_creacion = df_legal.sort_values("creacion")
+
+df_creacion = df_creacion[df_creacion["cookies"] == 1]
+df_creacion = df_creacion[df_creacion["aviso"] == 1]
+df_creacion = df_creacion[df_creacion["proteccion"] == 1]
+
+df_politicas_no_cumplen = len(df_legal)
+
+df_creacion.plot(x="creacion", kind="bar", stacked=True, figsize=(10, 8))
+plt.show()
+>>>>>>> 6476d79312cbd10db9fac827e22d366f81d4e5c0
 
 
 # Mostrar el número de contraseñas comprometidas y contraseñas no comprometidas
