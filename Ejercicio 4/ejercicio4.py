@@ -86,24 +86,29 @@ df_legal["aviso"] = df_legal["aviso"].astype(int)
 df_legal["proteccion"] = df_legal["proteccion"].astype(int)
 
 # Politicas que si cumplen
+df_legal["creacion"] = df_legal["creacion"].astype(int)
 df_creacion = df_legal.sort_values("creacion")
 df_creacion = df_creacion[df_creacion["cookies"] == 1]
 df_creacion = df_creacion[df_creacion["aviso"] == 1]
 df_politicas_cumplen = df_creacion[df_creacion["proteccion"] == 1]
 
-df_politicas_cumplen.plot(x="nombre", y="creacion", kind="bar", stacked=False, figsize=(10, 8))
+
+df_politicas_cumplen.plot(x='nombre',y='creacion',kind="bar",stacked=False, figsize=(12, 14))
+plt.ylim(1995,2025)
 plt.title("Webs que SI cumplen todas las políticas de privacidad")
 plt.xlabel("Web")
-plt.ylabel("Año de creacion")
+plt.ylabel("Año creacion")
 plt.show()
 
+# Politicas que no cumplen
 df_politicas_no_cumplen = pd.concat([df_legal, df_politicas_cumplen]).drop_duplicates(keep=False)
+df_politicas_no_cumplen["creacion"] = df_politicas_no_cumplen["creacion"].astype(int)
 df_politicas_no_cumplen = df_politicas_no_cumplen.sort_values("creacion")
-
-df_politicas_no_cumplen.plot(x="nombre", y="creacion", kind="bar", stacked=False, figsize=(10, 8))
+df_politicas_no_cumplen.plot(x='nombre',y='creacion', kind="bar", stacked=False, figsize=(12, 14))
+plt.ylim(1995,2025)
 plt.title("Webs que NO cumple políticas de privacidad")
 plt.xlabel("Web")
-plt.ylabel("Año de creacion")
+plt.ylabel("Año creacion")
 plt.show()
 
 # Mostrar el número de contraseñas comprometidas y contraseñas no comprometidas
