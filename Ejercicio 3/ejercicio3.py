@@ -12,7 +12,6 @@ def dataframe_users():
 con = sqlite3.connect('../database.db')
 df = dataframe_users()
 
-
 # EJERCICIO 3
 
 # 1º agrupación: < 200 correos || >= 200 correos
