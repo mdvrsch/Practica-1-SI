@@ -9,7 +9,7 @@ def dataframe():
     return df
 
 def dataframeIps():
-    dfIp = pd.read_sql_query("SELECT (ips) FROM ipsTable GROUP BY nombre", con)
+    dfIp = pd.read_sql_query("SELECT * FROM ipsTable GROUP BY nombre", con)
     return dfIp
 
 
@@ -44,8 +44,7 @@ print("La desviación estandar del total de fechas que han iniciado sesion: ", d
 
 # Media y desviación estándar del total de IPs que se han detectado
 # Hay un usuario que no tiene niguna dirección Ip - restar este usuario
-''' Comparar estos resultados porque coge hasta las 4 IPs None '''
-
+df.at[15,"ips"] = 0
 mediaIPs = df["ips"].mean()
 print("La media del total de IPs: ", mediaIPs)
 desviacionIPs = df["ips"].std()
