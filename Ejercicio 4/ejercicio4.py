@@ -47,13 +47,6 @@ df_contra_debil= df_contra_debil.sort_values("probabilidad", ascending=False)
     # 5º seleccionamos los 10 mayores
 df_contra_debil= df_contra_debil.head(n=10)
 df_contra_debil = df_contra_debil.drop(["vulnerable"], axis=1)
-# 3º calculamos la probabilidad de entre los que son vulnerables
-df_probabilidad = (df_contra_debil["email_cliclados"].astype(float) / df_contra_debil["email_phishing"].astype(
-    float)) * 100
-# 4º ordenamos los valores de mayor a menor
-df_probabilidad = df_probabilidad.sort_values(ascending=False)
-# 5º seleccionamos los 10 mayores
-df_probabilidad = df_probabilidad.head(n=10)
 
 df_contra_debil.plot(x="nombre", kind="bar", stacked=False, figsize=(10, 8))
 plt.show()
