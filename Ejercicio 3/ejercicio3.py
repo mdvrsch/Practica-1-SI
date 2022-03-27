@@ -27,7 +27,6 @@ df_emails_mas = df_emails_mas.groupby("permisos")
 print("Emails < 200:\n", df_emails_menos.sum())
 print("Emails >= 200:\n", df_emails_mas.sum())
 
-
 # EMAIL PHISHING
 df["email_phishing"] = df["email_phishing"].astype(int)
 

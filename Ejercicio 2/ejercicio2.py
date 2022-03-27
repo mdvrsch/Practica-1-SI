@@ -43,7 +43,7 @@ desviacionFechas = df["fechas"].std()
 print("La desviación estandar del total de fechas que han iniciado sesion: ", desviacionFechas)
 
 # Media y desviación estándar del total de IPs que se han detectado
-# Hay un usuario que no tiene niguna dirección Ip - restar este usuario
+# Hay un usuario que no tiene niguna dirección Ip
 df.at[15,"ips"] = 0
 mediaIPs = df["ips"].mean()
 print("La media del total de IPs: ", mediaIPs)
