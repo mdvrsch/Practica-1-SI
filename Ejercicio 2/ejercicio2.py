@@ -14,7 +14,7 @@ def dataframeIps():
     return dfIp
 
 
-con = sqlite3.connect('./database.db')
+con = sqlite3.connect('../database.db')
 df = dataframe()
 dfIp = dataframeIps()
 
